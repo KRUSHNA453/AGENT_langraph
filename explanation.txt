@@ -1,0 +1,50 @@
+In this project, the integration of LLM models happens dynamically through the Hugging Face Inference API acting as a central hub, managed by the LangGraph application in the backend.
+
+Here is the step-by-step breakdown of how the models are integrated and invoked:
+
+1. Database Configuration (
+
+models.py
+ & 
+
+main.py
+)
+When you register an Agent in the marketplace (either via the UI or the seed script), you aren't actually running the model locally. Instead, you define an agent record in the database that stores a specific model_id pointing to an open-source model hosted on Hugging Face (for example, meta-llama/Llama-3.1-8B-Instruct or mistralai/Mistral-7B-Instruct-v0.3).
+
+2. The LangGraph Router (
+
+routing_agent.py
+)
+When a user submits a query, it doesn't go straight to a model. It goes to the 
+
+RoutingAgent
+. This is a LangGraph state graph that decides which model to integrate with for that specific request based on heuristics (cost, speed, accuracy, and capability tags).
+
+3. The Actual Integration Point (
+
+_invoke_agent_node
+)
+Once the LangGraph router selects the winning agent, it moves to the 
+
+_invoke_agent_node
+. This function is the core integration logic:
+
+Authentication: It uses the HF_TOKEN loaded from your 
+
+.env
+ file.
+API Endpoint: It connects to Hugging Face's OpenAI-compatible routing endpoint (https://router.huggingface.co/v1/chat/completions) or a custom URL if defined by the agent.
+Payload Construction: It builds a prompt payload containing:
+The model_id of the selected agent.
+A hidden system prompt ("You are a helpful AI assistant in a multi-agent marketplace.").
+The user's query.
+4. Dynamic Context Injection (The Weather Feature)
+Interestingly, the integration does a bit of preprocessing before hitting the model. In 
+
+routing_agent.py
+, if the selected agent has the "weather" capability tag, the system intercepts the prompt. It makes live API requests to open-meteo.com, parses the real-time weather data for the user's requested location, and silently injects it into the prompt to the model (e.g., [SYSTEM INJECTED REAL-TIME DATA] Current live weather...). This gives the LLM factual context it wouldn't otherwise have.
+
+5. Semantic Embedding Models
+Additionally, there's a second type of model integrated. If HF_ENABLE_SEMANTIC_ROUTING is true, the router uses a smaller embedding model (by default sentence-transformers/all-MiniLM-L6-v2) via the Hugging Face feature-extraction pipeline to mathematically compare the user's query against the descriptions of the agents to help pick the best one.
+
+Summary: The application itself doesn't host or load the heavy neural network weights into memory. It acts as an intelligent, async API gateway that dynamically routes standard REST requests to Hugging Face's cloud infrastructure based on which "Agent Profile" wins the routing tournament.

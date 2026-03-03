@@ -1,0 +1,41 @@
+Agent 1: The Expert Programmer 💻
+(This demonstrates that your router understands technical requests and routes them to a massive 32B coding model.)
+
+What to type in the Registration Form:
+
+Name: Qwen Coder 32B
+Description: An expert-level coding agent by Alibaba.
+Capabilities: code, programming, python, javascript, debug
+Model ID: Qwen/Qwen2.5-Coder-32B-Instruct
+Demo Query to run in Smart Query:
+
+"Write a python function to check if a string is a palindrome." 👉 What your Professor will see: The LangGraph router will instantly analyze the tags, match "python", and correctly route this query to Qwen Coder 32B because it has the highest mathematical capability score!
+
+Agent 2: The Creative Storyteller 📖
+(This demonstrates that your router prevents the rigid coding model from writing poetry, and instead redirects it to a creative model.)
+
+What to type in the Registration Form:
+
+Name: Mistral Creative
+Description: A highly capable open-source model with excellent creative phrasing.
+Capabilities: creative, writing, poetry, story, poem
+Model ID: mistralai/Mistral-7B-Instruct-v0.3
+Demo Query to run in Smart Query:
+
+"Write a short, creative poem about a robot learning to paint." 👉 What your Professor will see: The router will bypass the Coding agent completely and intelligently route this query to Mistral Creative!
+
+Agent 3: The Live Weather Tracker ⛅
+(This demonstrates your custom Backend Langgraph Context Injection that actively fetches live internet data!)
+
+What to type in the Registration Form:
+
+Name: Live Weather Tracker
+Description: A meteorologist that reports real-time internet weather data.
+Capabilities: weather, forecast, meteorology, live
+Model ID: meta-llama/Llama-3.1-8B-Instruct
+Demo Query to run in Smart Query:
+
+"What is the weather in London right now?" 👉 What your Professor will see: Not only will the router correctly select the Live Weather Tracker, but your backend will physically ping the live wttr.in network for London's current cloud/temperature data and Llama 3.1 will formulate a real-time response!
+
+🔥 Pro-Tip for your Demo:
+Start your presentation by navigating to the Agent Registry tab. Delete a few of the default UI agents so the screen is clean. Then, physically type out these three exact agents in front of him using the Register Agent button to show him the marketplace is completely dynamic and database-driven! Make sure you don't use the dropdown to "force" them—let the Smart Router's math choose them automatically!

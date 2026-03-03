@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Marketplace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Highlight.js for code block styling -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <!-- Marked.js for robust Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Chart.js for History Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <div class="logo">
+                <span class="logo-icon">✨</span>
+                <h1>AI Agent Marketplace</h1>
+            </div>
+            <nav>
+                <button id="nav-registry" class="active">Agent Registry</button>
+                <button id="nav-query">Smart Query</button>
+                <button id="nav-history">History</button>
+            </nav>
+        </header>
+
+        <main class="content-area">
+            <!-- Registry View -->
+            <section id="view-registry" class="view active-view">
+                <div class="section-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-end; text-align: left;">
+                    <div>
+                        <h2>Available Agents</h2>
+                        <p>Discover and integrate open-source AI agents registered in the marketplace.</p>
+                    </div>
+                    <button id="btn-open-register" class="primary-btn"
+                        style="width: auto; padding: 0.6rem 1.2rem; font-size: 0.95rem;">
+                        <span class="btn-text">+ Register Agent</span>
+                    </button>
+                </div>
+
+                <div class="filter-bar glass-panel"
+                    style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; padding: 1rem;">
+                    <input type="text" id="filter-capability" placeholder="Search capability (e.g. math)"
+                        style="flex: 1;">
+                    <button id="btn-apply-filters" class="secondary-btn" style="padding: 0.5rem 1rem;">Filter</button>
+                </div>
+
+                <div id="agents-grid" class="cards-grid">
+                    <div class="loader">Loading agents...</div>
+                </div>
+            </section>
+
+            <!-- Query View -->
+            <section id="view-query" class="view">
+                <div class="section-header">
+                    <h2>Intelligent Query Routing</h2>
+                    <p>Submit a query and our router will select the best agent based on your preferences.</p>
+                </div>
+
+                <details class="routing-prefs-toggle"
+                    style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px;">
+                    <summary style="cursor: pointer; font-weight: 500; color: var(--primary-color);">⚙️ Advanced Routing
+                        Preferences</summary>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <div class="pref-slider" style="flex: 1;">
+                            <label for="pref-cost">Cost Weight</label>
+                            <input type="range" id="pref-cost" min="0" max="1" step="0.1" value="0.33"
+                                style="width: 100%;">
+                        </div>
+                        <div class="pref-slider" style="flex: 1;">
+                            <label for="pref-latency">Latency Weight</label>
+                            <input type="range" id="pref-latency" min="0" max="1" step="0.1" value="0.33"
+                                style="width: 100%;">
+                        </div>
+                        <div class="pref-slider" style="flex: 1;">
+                            <label for="pref-accuracy">Accuracy Weight</label>
+                            <input type="range" id="pref-accuracy" min="0" max="1" step="0.1" value="0.34"
+                                style="width: 100%;">
+                        </div>
+                    </div>
+                </details>
+
+                <div class="query-layout">
+                    <!-- Input Area -->
+                    <div class="query-panel glass-panel">
+                        <textarea id="query-input"
+                            placeholder="Type your task here... (e.g., 'Solve a math problem', 'Write python code')"></textarea>
+                        <button id="btn-submit" class="primary-btn">
+                            <span class="btn-text">Route Query</span>
+                            <span class="loader-spinner" style="display:none;"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Response Area -->
+                <div id="response-container" class="response-panel glass-panel" style="display: none;">
+                    <h3>Result</h3>
+                    <div class="route-info">
+                        <span class="badge">Selected Agent: <strong id="res-agent">...</strong></span>
+                        <span class="badge">Provider: <strong id="res-provider">...</strong></span>
+                        <span class="badge">Framework: <strong id="res-framework">...</strong></span>
+                        <span class="badge time-badge">Time: <strong id="res-time">...</strong>ms</span>
+                    </div>
+                    <div class="response-content" id="res-content"></div>
+
+                    <!-- Feedback Controls -->
+                    <div id="feedback-controls" style="margin-top: 1rem; display: none;">
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-secondary);">Was this
+                            helpful? Your feedback improves accuracy routing.</p>
+                        <button id="btn-feedback-up" class="secondary-btn"
+                            style="width: auto; padding: 0.4rem 0.8rem; margin-right: 0.5rem; border-color: #50fa7b; color: #50fa7b;">👍</button>
+                        <button id="btn-feedback-down" class="secondary-btn"
+                            style="width: auto; padding: 0.4rem 0.8rem; border-color: #ff5555; color: #ff5555;">👎</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History View -->
+            <section id="view-history" class="view">
+                <div class="section-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-end; text-align: left;">
+                    <div>
+                        <h2>Query History</h2>
+                        <p>Review past queries, observe which agent was selected, and analyze latency performance.</p>
+                    </div>
+                    <button id="btn-delete-history" class="secondary-btn"
+                        style="width: auto; padding: 0.6rem 1.2rem; font-size: 0.95rem; border-color: #ff5555; color: #ff5555; display: none;">
+                        <span class="btn-text">Delete Selected</span>
+                    </button>
+                </div>
+                <div class="chart-container glass-panel"
+                    style="margin-bottom: 2rem; padding: 1rem; position: relative; height: 300px;">
+                    <canvas id="historyChart"></canvas>
+                </div>
+                <div class="glass-panel" style="margin-bottom: 2rem;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="cb-select-all"></th>
+                                    <th>Query</th>
+                                    <th>Selected Agent</th>
+                                    <th>Response Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <tr>
+                                    <td colspan="4" class="text-center">Loading history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h2>Register New Agent</h2>
+                <button id="btn-close-modal" class="close-btn">&times;</button>
+            </div>
+            <form id="register-form" class="modal-form">
+                <div class="form-group">
+                    <label for="reg-name">Agent Name *</label>
+                    <input type="text" id="reg-name" required placeholder="e.g. MathGenius-7B">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-desc">Description</label>
+                    <input type="text" id="reg-desc" placeholder="Brief explanation of capabilities...">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-caps">Capabilities * (comma-separated)</label>
+                    <input type="text" id="reg-caps" required placeholder="e.g. math, code, general">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reg-model">HF Model ID *</label>
+                        <input type="text" id="reg-model" required placeholder="mistralai/Mistral-7B-v0.1">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btn-cancel-reg" class="secondary-btn">Cancel</button>
+                    <button type="submit" id="btn-submit-reg" class="primary-btn"
+                        style="width: auto; padding: 0.6rem 1.5rem;">
+                        <span class="btn-text">Register Agent</span>
+                        <span class="loader-spinner" style="display:none; width: 16px; height: 16px;"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

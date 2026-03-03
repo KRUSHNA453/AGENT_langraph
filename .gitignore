@@ -1,0 +1,26 @@
+# Environment & secrets
+backend/.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+backend/venv/
+venv/
+.venv/
+
+# SQLite database (runtime data, not source)
+backend/*.db
+
+# Editor & OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Test scratch files
+backend/test2.py
+backend/check.js
