@@ -1,5 +1,6 @@
 import os
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import List, Optional
 
@@ -16,6 +17,7 @@ from database import Base, SessionLocal, engine, get_db, run_sqlite_migrations
 from routing_agent import RoutingAgent
 
 # Load local backend/.env for tokens and runtime config.
+
 ENV_PATH = Path(__file__).resolve().parent / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
 
@@ -23,10 +25,27 @@ load_dotenv(dotenv_path=ENV_PATH)
 Base.metadata.create_all(bind=engine)
 run_sqlite_migrations()
 
+
+def _auto_seed():
+    """Seed the database with default agents if it is empty. Safe to call on every startup."""
+    from seed_db import seed
+    seed()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Runs once when the server starts — before accepting requests.
+    _auto_seed()
+    yield
+    # Runs once when the server shuts down.
+    await router.close()
+
+
 app = FastAPI(
     title="AI Agent Marketplace API",
     description="Register, discover, and invoke open-source LLM agents with intelligent routing.",
     version="2.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
