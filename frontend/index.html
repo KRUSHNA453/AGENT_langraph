@@ -72,19 +72,22 @@
                         Preferences</summary>
                     <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                         <div class="pref-slider" style="flex: 1;">
-                            <label for="pref-cost">Cost Weight</label>
-                            <input type="range" id="pref-cost" min="0" max="1" step="0.1" value="0.33"
-                                style="width: 100%;">
+                            <label for="pref-cost">Cost Weight <small
+                                    style="color:var(--text-secondary)">(0–1)</small></label>
+                            <input type="number" id="pref-cost" min="0" max="1" step="0.01" value="0.33"
+                                style="width: 100%;" placeholder="0.33">
                         </div>
                         <div class="pref-slider" style="flex: 1;">
-                            <label for="pref-latency">Latency Weight</label>
-                            <input type="range" id="pref-latency" min="0" max="1" step="0.1" value="0.33"
-                                style="width: 100%;">
+                            <label for="pref-latency">Latency Weight <small
+                                    style="color:var(--text-secondary)">(0–1)</small></label>
+                            <input type="number" id="pref-latency" min="0" max="1" step="0.01" value="0.33"
+                                style="width: 100%;" placeholder="0.33">
                         </div>
                         <div class="pref-slider" style="flex: 1;">
-                            <label for="pref-accuracy">Accuracy Weight</label>
-                            <input type="range" id="pref-accuracy" min="0" max="1" step="0.1" value="0.34"
-                                style="width: 100%;">
+                            <label for="pref-accuracy">Accuracy Weight <small
+                                    style="color:var(--text-secondary)">(0–1)</small></label>
+                            <input type="number" id="pref-accuracy" min="0" max="1" step="0.01" value="0.34"
+                                style="width: 100%;" placeholder="0.34">
                         </div>
                     </div>
                 </details>
@@ -208,7 +211,8 @@
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label for="reg-accuracy">🎯 Accuracy Score (0–1)</label>
-                        <input type="number" id="reg-accuracy" min="0" max="1" step="0.01" value="0.90" placeholder="e.g. 0.90">
+                        <input type="number" id="reg-accuracy" min="0" max="1" step="0.01" value="0.90"
+                            placeholder="e.g. 0.90">
                     </div>
                 </div>
 
