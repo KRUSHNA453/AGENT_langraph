@@ -141,6 +141,9 @@ def update_agent(agent_id: int, agent_data: schemas.AgentCreate, db: Session = D
     agent.description = agent_data.description
     agent.capabilities = agent_data.capabilities
     agent.model_id = agent_data.model_id
+    agent.cost_per_request = agent_data.cost_per_request
+    agent.average_latency_ms = agent_data.average_latency_ms
+    agent.accuracy_score = agent_data.accuracy_score
     
     db.commit()
     db.refresh(agent)

@@ -68,9 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: document.getElementById('reg-name').value.trim(),
                 description: document.getElementById('reg-desc').value.trim(),
                 capabilities: document.getElementById('reg-caps').value.trim(),
-                cost_per_request: 0.02,
-                average_latency_ms: 1500,
-                accuracy_score: 0.90,
+                cost_per_request: parseFloat(document.getElementById('reg-cost').value) || 0.02,
+                average_latency_ms: parseFloat(document.getElementById('reg-latency').value) || 1500,
+                accuracy_score: parseFloat(document.getElementById('reg-accuracy').value) || 0.90,
                 provider: 'huggingface',
                 framework: 'custom',
                 api_endpoint: 'https://router.huggingface.co/v1/chat/completions',
@@ -310,6 +310,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <p class="desc">${a.description}</p>
                     ${a.model_id ? `<p class="meta-line"><dfn>Model:</dfn> ${a.model_id}</p>` : ''}
+                    <div class="agent-metrics" style="display: flex; gap: 0.6rem; margin: 0.6rem 0; font-size: 0.82rem;">
+                        <span class="metric-badge" style="background: rgba(80,250,123,0.12); color: #50fa7b; border: 1px solid rgba(80,250,123,0.3); padding: 2px 8px; border-radius: 20px;">
+                            💰 $${(a.cost_per_request ?? 0).toFixed(3)}
+                        </span>
+                        <span class="metric-badge" style="background: rgba(255,184,108,0.12); color: #ffb86c; border: 1px solid rgba(255,184,108,0.3); padding: 2px 8px; border-radius: 20px;">
+                            ⚡ ${Math.round(a.average_latency_ms ?? 0)}ms
+                        </span>
+                        <span class="metric-badge" style="background: rgba(189,147,249,0.12); color: #bd93f9; border: 1px solid rgba(189,147,249,0.3); padding: 2px 8px; border-radius: 20px;">
+                            🎯 ${((a.accuracy_score ?? 0) * 100).toFixed(0)}%
+                        </span>
+                    </div>
                     <div class="capabilities">
                         ${a.capabilities.split(',').map(c => `<span class="tag">${c.trim()}</span>`).join('')}
                     </div>
@@ -333,6 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.getElementById('reg-desc').value = agent.description;
                         document.getElementById('reg-caps').value = agent.capabilities;
                         document.getElementById('reg-model').value = agent.model_id || '';
+                        document.getElementById('reg-cost').value = agent.cost_per_request ?? 0.02;
+                        document.getElementById('reg-latency').value = agent.average_latency_ms ?? 1500;
+                        document.getElementById('reg-accuracy').value = agent.accuracy_score ?? 0.90;
 
                         const modal = document.getElementById('register-modal');
                         modal.querySelector('h2').textContent = "Edit Agent";
